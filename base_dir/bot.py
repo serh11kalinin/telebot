@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from base_dir import config
 import telebot
+import os
+import time
 
 bot = telebot.TeleBot(config.token)
 
