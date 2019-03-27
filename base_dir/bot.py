@@ -17,6 +17,7 @@ if __name__ == '__main__':
 """
 
 
+@bot.message_handler(commands=['test'])
 def find_file_ids(message):
     for file in os.listdir('music/'):
         if file.split('.')[-1] == 'ogg':
@@ -30,5 +31,3 @@ def find_file_ids(message):
 if __name__ == '__main__':
     bot.polling(none_stop=True)
 
-
-# TODO add folder with *.ogg music snippets (15-20second length)
