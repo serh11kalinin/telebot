@@ -2,7 +2,7 @@
 import shelve
 from base_dir import SQLighter
 from base_dir.config import shelve_name, database_name
-
+from random import shuffle
 
 def count_rows():
     """
@@ -58,3 +58,26 @@ def get_answer_for_user(chat_id):
         # Если человек не играет, ничего не возвращаем
         except KeyError:
             return None
+
+
+def generate_markup(right_answer, wrong_answer):
+    """
+    Создаем кастомную клавиатуру для выбора ответа
+    :param right_answer: Правильный ответ
+    :param wrong_answer: Набор неправильных ответов
+    :return: Объект кастомной клавиатуры
+    """
+    markup = type.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    # Склеиваем правильный ответ с неправильными
+    all_answers = '{},{}'.format(right_answer, wrong_answer)
+    # Создаем лист (массив) и записываем в него все элементы
+    list_items = []
+    for item in all_answers.split(','):
+        list_items.append(item)
+    # Хорошенько перемешаем все элементы
+    shuffle(list_items)
+    # Заполняем разметку перемешанными элементами
+    for item in list_items:
+        markup.add(item)
+    return markup
+
