@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import shelve
+from telebot import types
+from random import shuffle
 from base_dir import SQLighter
 from base_dir.config import shelve_name, database_name
-from random import shuffle
+
 
 def count_rows():
     """

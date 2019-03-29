@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from base_dir import config
+from base_dir import SQLighter
+from base_dir import utils
+from telebot import types
 import telebot
 import os
 import time
-
+import random
 bot = telebot.TeleBot(config.token)
 
 """
@@ -15,6 +18,42 @@ def repeat_all_messages(message):
 if __name__ == '__main__':
     bot.polling(none_stop=True)
 """
+
+
+@bot.message_handler(commands=['game'])
+def game(message):
+    # connecting to DB
+    db_worker = SQLighter(config.database_name)
+    # receiving random row from DB
+    row = db_worker.select_single(random.randint(1, utils.get_rows_count()))
+    # markup being formed
+    markup = utils.generate_markup(row[2], row[3])
+    # sending audio and possible answers
+    bot.send_voice(message.chat_id, row[1], reply_markup=markup, duration=20)
+    # "game" mode "on"
+    utils.set_user_game(message.chat_id, row[2])
+    # killing DB connection
+    db_worker.close()
+
+
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def check_answer(message):
+    # if func returns None - user is out of the game
+    answer = utils.get_answer_for_user(message.chat.id)
+    # answer could be a text as well as None
+    # if answer is None
+    if not answer:
+        bot.send_message(message.chat.id, 'Choose /game command to start the game')
+    else:
+        # closing keyboard with possible answers
+        keyboard_hider = types.ReplyKeyboardRemove()
+        # if answer right/wrong
+        if message.text == answer:
+            bot.send_message(message.chat.id, 'Right!', reply_markup=keyboard_hider)
+        else:
+            bot.send_message(message.chat.id, 'Sorry, that is wrong answer :( Try again!', reply_markup=keyboard_hider)
+        # removing user from shelve (game over)
+        utils.finish_user_game(message.chat.id)
 
 
 @bot.message_handler(commands=['test'])
@@ -29,5 +68,7 @@ def find_file_ids(message):
 
 
 if __name__ == '__main__':
+    utils.count_rows()
+    random.seed()
     bot.polling(none_stop=True)
 
