@@ -2,7 +2,7 @@
 import shelve
 from telebot import types
 from random import shuffle
-from base_dir import SQLighter
+from base_dir.SQLighter import SQLighter
 from base_dir.config import shelve_name, database_name
 
 
