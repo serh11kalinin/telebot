@@ -3,7 +3,7 @@ import shelve
 from telebot import types
 from random import shuffle
 from base_dir.SQLighter import SQLighter
-from base_dir.config import shelve_name, database_name
+from base_dir.config import database_name, shelve_name
 
 
 def count_rows():
@@ -27,7 +27,7 @@ def get_rows_count():
     return rowsum
 
 
-def set_user_name(chat_id, estimated_answer):
+def set_user_game(chat_id, estimated_answer):
     """
     Записываем юзера в игроки и запоминаем, что он должен ответить.
     :param chat_id: id юзера
@@ -69,7 +69,7 @@ def generate_markup(right_answer, wrong_answer):
     :param wrong_answer: Набор неправильных ответов
     :return: Объект кастомной клавиатуры
     """
-    markup = type.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     # Склеиваем правильный ответ с неправильными
     all_answers = '{},{}'.format(right_answer, wrong_answer)
     # Создаем лист (массив) и записываем в него все элементы

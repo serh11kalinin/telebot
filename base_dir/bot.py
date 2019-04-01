@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from base_dir import config
-from base_dir import SQLighter
-from base_dir import utils
-from telebot import types
 import telebot
+from base_dir import config
 import os
 import time
 import random
+from base_dir import utils
+from base_dir.SQLighter import SQLighter
+from telebot import types
+
 bot = telebot.TeleBot(config.token)
 
 """
@@ -22,17 +23,17 @@ if __name__ == '__main__':
 
 @bot.message_handler(commands=['game'])
 def game(message):
-    # connecting to DB
+    # Подключаемся к БД
     db_worker = SQLighter(config.database_name)
-    # receiving random row from DB
+    # Получаем случайную строку из БД
     row = db_worker.select_single(random.randint(1, utils.get_rows_count()))
-    # markup being formed
+    # Формируем разметку
     markup = utils.generate_markup(row[2], row[3])
-    # sending audio and possible answers
-    bot.send_voice(message.chat_id, row[1], reply_markup=markup, duration=20)
-    # "game" mode "on"
-    utils.set_user_game(message.chat_id, row[2])
-    # killing DB connection
+    # Отправляем аудиофайл с вариантами ответа
+    bot.send_voice(message.chat.id, row[1], reply_markup=markup, duration=20)
+    # Включаем "игровой режим"
+    utils.set_user_game(message.chat.id, row[2])
+    # Отсоединяемся от БД
     db_worker.close()
 
 
