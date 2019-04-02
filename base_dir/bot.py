@@ -7,7 +7,6 @@ import random
 from base_dir import utils
 from base_dir.SQLighter import SQLighter
 from telebot import types
-
 bot = telebot.TeleBot(config.token)
 
 """
@@ -53,7 +52,7 @@ def check_answer(message):
         if message.text == answer:
             bot.send_message(message.chat.id, 'Right!', reply_markup=keyboard_hider)
         else:
-            bot.send_message(message.chat.id, 'Sorry, that is wrong answer :( Try again!', reply_markup=keyboard_hider)
+            bot.send_message(message.chat.id, 'Sorry, that is wrong answer. Try again!', reply_markup=keyboard_hider)
         # removing user from shelve (game over)
         utils.finish_user_game(message.chat.id)
 
